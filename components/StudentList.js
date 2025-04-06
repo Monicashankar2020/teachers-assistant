@@ -34,8 +34,8 @@ export default function StudentList({ classId }) {
   };
 
   return (
-    <div className="bg-gray-800 p-6 rounded-lg shadow-md mt-6 animate-fade-in">
-      <h2 className="text-lg font-semibold text-white mb-3">Students</h2>
+    <div className="bg-gray-800 p-6 rounded-lg shadow-lg shadow-sky-600 mt-6 animate-fade-in">
+      <h2 className="text-2xl text-center font-mono font-semibold text-white mb-3">Students</h2>
       {students.length > 0 ? (
         <ul>
           {students.map((student) => {
@@ -44,7 +44,7 @@ export default function StudentList({ classId }) {
             return (
               <li
                 key={student.id}
-                className="flex justify-between items-center p-2 bg-gray-700 rounded-md mb-2"
+                className="flex justify-between items-center p-2 bg-gray-700 rounded-md mb-2 shadow-lg shadow-black"
               >
                 <span className="text-white">{student.username}</span>
                 <button

@@ -1,3 +1,4 @@
+//API to handle the creation of new classes. 
 import { prisma } from "../../lib/prisma";
 
 export default async function handler(req, res) {
@@ -9,7 +10,7 @@ export default async function handler(req, res) {
         return res.status(400).json({ error: "Missing fields. Ensure all fields are provided." });
       }
 
-      // Ensure teacherId exists in the User table
+      // Only teachers can create a new class
       const teacher = await prisma.user.findUnique({
         where: { id: teacherId },
       });
@@ -18,7 +19,6 @@ export default async function handler(req, res) {
         return res.status(400).json({ error: "Invalid teacher ID." });
       }
 
-      // Check if classCode is unique
       const existingClass = await prisma.classes.findUnique({ where: { classCode } });
 
       if (existingClass) {
@@ -33,7 +33,6 @@ export default async function handler(req, res) {
     }
 
     if (req.method === "GET") {
-      // Check if fetching a specific class by ID
       if (req.query.id) {
         const classId = req.query.id;
         const classDetails = await prisma.classes.findUnique({

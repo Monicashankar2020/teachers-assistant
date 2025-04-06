@@ -1,3 +1,4 @@
+// A supporting API for the creation of classes
 import { prisma } from "../../../lib/prisma";
 
 export default async function handler(req, res) {

@@ -1,3 +1,5 @@
+//API to reset password if the user forgets it, using Email verification.
+
 import { prisma } from '../../../lib/prisma';
 import { sendEmail } from '../../../utils/sendEmail';
 

@@ -1,3 +1,4 @@
+//API to help fetch response for the quiz submitted by a particular student from the database.
 import { prisma } from "../../../lib/prisma";
 
 export default async function handler(req, res) {

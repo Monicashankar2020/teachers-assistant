@@ -58,12 +58,12 @@ export default function StudentClassPage() {
 
   return (
     <div className="min-h-screen bg-gray-900 text-white p-8">
-      <h1 className="text-3xl font-bold mb-4">Available Quizzes</h1>
+      <h1 className="text-3xl font-bold mb-4 text-center font-mono">Available Quizzes</h1>
       {quizzes.length > 0 ? (
-        <ul className="space-y-2">
+        <ul className="space-y-4">
           {quizzes.map((quiz) => (
-            <li key={quiz.id} className="bg-gray-800 p-3 rounded-md">
-              <a href={quiz.formUrl} target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:underline">
+            <li key={quiz.id} className="bg-gray-800 p-3 rounded-md shadow-lg shadow-black">
+              <a href={quiz.formUrl} target="_blank" rel="noopener noreferrer" className="text-blue-200 hover:underline">
                 {quiz.title}
               </a>
              

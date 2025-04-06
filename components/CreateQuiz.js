@@ -1,3 +1,5 @@
+// This component takes topic and number of questions from the user and sends them to the gemini backend to generate a quiz
+
 import { useState, useEffect } from "react";
 
 export default function CreateQuiz({ classId }) {
@@ -5,33 +7,15 @@ export default function CreateQuiz({ classId }) {
   const [numQuestions, setNumQuestions] = useState(5); // Default to 5 questions
   const [loading, setLoading] = useState(false);
   const [userId, setUserId] = useState(null);
-  const [accessToken, setAccessToken] = useState(null);
 
-  // Fetch user ID and access token from the backend
+  // Get userId from localStorage
   useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        const userId = localStorage.getItem("userId"); // Get userId from localStorage
-        if (!userId) return alert("Access Denied! Please log in.");
-
-        setUserId(userId);
-
-        // Fetch access token from the backend
-        const res = await fetch(`/api/getAccessToken?userId=${userId}`);
-        const data = await res.json();
-
-        if (res.ok && data.accessToken) {
-          setAccessToken(data.accessToken);
-        } else {
-          alert("Failed to retrieve access token. Please log in again.");
-        }
-      } catch (error) {
-        console.error("Error fetching access token:", error);
-        alert("Error fetching access token.");
-      }
-    };
-
-    fetchUserData();
+    const storedUserId = localStorage.getItem("userId");
+    if (!storedUserId) {
+      alert("Access Denied! Please log in.");
+    } else {
+      setUserId(storedUserId);
+    }
   }, []);
 
   const createQuiz = async () => {
@@ -40,7 +24,7 @@ export default function CreateQuiz({ classId }) {
       return;
     }
 
-    if (!userId || !accessToken) {
+    if (!userId) {
       alert("Access Denied! Please log in.");
       return;
     }
@@ -52,30 +36,34 @@ export default function CreateQuiz({ classId }) {
 
     setLoading(true);
 
-    const res = await fetch("/api/createQuiz", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${accessToken}`, // Use access token from backend
-      },
-      body: JSON.stringify({ topic, numQuestions, classId, createdBy: userId }),
-    });
+    try {
+      const res = await fetch("/api/createQuiz", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ topic, numQuestions, classId, createdBy: userId }),
+      });
 
-    const data = await res.json();
+      const data = await res.json();
 
-    if (res.ok) {
-      alert(`Quiz created successfully! Google Form: ${data.formUrl}`);
-      setTopic("");
-      setNumQuestions(5);
-    } else {
-      alert(`Error creating quiz: ${data.error}`);
+      if (res.ok) {
+        alert(`Quiz created successfully! Google Form: ${data.formUrl}`);
+        setTopic("");
+        setNumQuestions(5);
+      } else {
+        alert(`Error creating quiz: ${data.error}`);
+      }
+    } catch (error) {
+      console.error("Quiz creation error:", error);
+      alert("Something went wrong. Please try again.");
     }
 
     setLoading(false);
   };
 
   return (
-    <div className="bg-gray-800 p-6 rounded-lg shadow-md mt-6">
+    <div className="glowy-box">
       <h2 className="text-lg font-semibold text-white mb-3">Create Quiz</h2>
 
       <input
@@ -104,3 +92,34 @@ export default function CreateQuiz({ classId }) {
     </div>
   );
 }
+
+//   return (
+//     <div className="glowy-box">
+//       <h2 className="text-lg font-semibold text-white mb-3">Create Quiz</h2>
+
+//       <input
+//         type="text"
+//         value={topic}
+//         onChange={(e) => setTopic(e.target.value)}
+//         placeholder="Enter Quiz Topic"
+//         className="w-full p-2 mb-2 rounded-md bg-gray-700 text-white"
+//       />
+
+//       <input
+//         type="number"
+//         value={numQuestions}
+//         onChange={(e) => setNumQuestions(Number(e.target.value))}
+//         placeholder="Enter Number of Questions"
+//         className="w-full p-2 mb-2 rounded-md bg-gray-700 text-white"
+//       />
+
+//       <button
+//         onClick={createQuiz}
+//         disabled={loading}
+//         className="bg-blue-500 px-4 py-2 rounded-md text-white hover:bg-blue-600 transition"
+//       >
+//         {loading ? "Creating Quiz..." : "Create Quiz"}
+//       </button>
+//     </div>
+//   );
+// }

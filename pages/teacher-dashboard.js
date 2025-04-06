@@ -12,9 +12,10 @@ export default function TeacherDashboard() {
 
   useEffect(() => {
     async function fetchClasses() {
+      if (!teacherId) return;
       try {
-        const res = await fetch("/api/classes");
-        if (!res.ok) throw new Error("Failed to fetch classes");
+        const res = await fetch(`/api/classes/teacher?teacherId=${teacherId}`);
+        if (!res.ok) throw new Error("Failed to fetch teacher's classes");
         const data = await res.json();
         setClasses(Array.isArray(data) ? data : []);
       } catch (error) {
@@ -24,9 +25,9 @@ export default function TeacherDashboard() {
         setLoading(false);
       }
     }
-
+  
     fetchClasses();
-  }, []);
+  }, [teacherId]);
 
   const createClass = async () => {
     if (!teacherId) {
@@ -62,9 +63,9 @@ export default function TeacherDashboard() {
 
   return (
     <div className="min-h-screen bg-gray-900 text-white p-8 animate-fade-in">
-      <h1 className="text-3xl font-bold mb-4">Teacher Dashboard</h1>
+      <h1 className="text-5xl font-bold mb-4 text-center">Teacher's Dashboard</h1>
 
-      <div className="flex gap-4 mb-6">
+      <div className="glowy-box">
         <input
           type="text"
           className="p-2 border border-gray-700 rounded-md bg-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-transform transform hover:scale-105"
@@ -91,7 +92,7 @@ export default function TeacherDashboard() {
       {loading ? (
         <p className="text-gray-400 animate-pulse">Loading classes...</p>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="flex flex-wrap justify-center gap-4 scroll-smooth">
           {classes.length > 0 ? (
             classes.map((cls) => (
               <ClassCard key={cls.id} cls={cls} onClick={() => router.push(`/class/${cls.id}`)} />

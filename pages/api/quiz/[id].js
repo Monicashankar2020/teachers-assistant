@@ -1,3 +1,4 @@
+//API to help fetch quiz using the quiz id from the database.
 import { prisma } from "../../../lib/prisma";
 
 export default async function handler(req, res) {

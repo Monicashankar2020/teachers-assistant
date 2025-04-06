@@ -1,3 +1,5 @@
+//API to support the submit function in the frontend, and store all relevant details in the database,
+// and provide grades and immediate feedback to the student.
 import { prisma } from "../../../lib/prisma";
 import fetch from "node-fetch";
 
@@ -6,13 +8,12 @@ export default async function handler(req, res) {
 
   const { quizId, answers, studentId } = req.body;
 
-  // Basic validation
   if (!quizId || !studentId || !answers || typeof answers !== "object") {
     return res.status(400).json({ error: "Missing or invalid data in request body" });
   }
 
   try {
-    // Check if already submitted
+    // Check if already submitted, so that there are no accidental duplicates.
     const existingResponse = await prisma.response.findUnique({
       where: {
         quizId_studentId: {
@@ -26,7 +27,6 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: "You have already submitted this quiz." });
     }
 
-    // Fetch quiz and questions
     const quiz = await prisma.quiz.findUnique({
       where: { id: quizId },
       include: { questions: true },

@@ -26,6 +26,10 @@ body {
   @apply bg-dark text-white;
 }
 
+.bg-dirtysky {
+  background-color: #151b23;
+}
+
 .bg-dark {
   background-color: #121212;
 }
@@ -77,4 +81,8 @@ body {
 
 .animate-slide-down {
   animation: slide-down 0.6s ease-out both;
+}
+
+.glowy-box{
+  @apply flex flex-col gap-4 mb-6 bg-dirtysky justify-center shadow-xl shadow-sky-700 m-5 p-5 mb-14;
 }

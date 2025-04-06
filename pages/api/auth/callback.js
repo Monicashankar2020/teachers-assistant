@@ -15,7 +15,6 @@ export default async function handler(req, res) {
   if (!code) return res.status(400).json({ error: "Authorization code is missing." });
 
   try {
-    // Exchange code for tokens
     const { tokens } = await oauth2Client.getToken(code);
     oauth2Client.setCredentials(tokens);
 
@@ -26,7 +25,7 @@ export default async function handler(req, res) {
     });
     const { email, name } = ticket.getPayload();
 
-    // Ensure only the correct user is stored
+    // Create an user only if they don't already exist in the database
     let user = await prisma.user.findUnique({ where: { email } });
 
     if (!user) {
@@ -34,14 +33,14 @@ export default async function handler(req, res) {
         data: {
           email,
           username: name,
-          role: "student", // Default to student
+          role: "student", 
           accessToken: tokens.access_token,
           refreshToken: tokens.refresh_token,
-          password: "", // No password for Google accounts
+          password: "", // No password required for Google accounts
         },
       });
     } else {
-      // Update tokens if they change
+      // To update tokens, especially if user logged in using Google OAuth, as that token expires every 2 hours.
       await prisma.user.update({
         where: { email },
         data: { accessToken: tokens.access_token, refreshToken: tokens.refresh_token },
@@ -54,7 +53,7 @@ export default async function handler(req, res) {
       serialize("authToken", tokens.access_token, {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
-        maxAge: 3600 * 24, // 1 day
+        maxAge: 3600 * 24, 
         path: "/",
       })
     );
