@@ -7,7 +7,7 @@ export default function Home() {
      
       <div className="text-center space-y-8 animate-fade-in mt-[-60px]">
         <h1 className="text-5xl md:text-6xl font-extrabold tracking-wide text-white drop-shadow-lg">
-          Welcome to <span className="text-blue-400">Teacher's Assistant</span>
+          Welcome to <span className="text-blue-400">Teacher&apos;s Assistant</span>
         </h1>
         <p className="text-lg md:text-xl text-gray-300 max-w-xl mx-auto">
           Empowering teachers to create quizzes with AI and helping students enhance learning through personalized feedback.
