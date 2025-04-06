@@ -1,0 +1,89 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id              String       @id @default(uuid())
+  username        String
+  email           String       @unique
+  password        String
+  role            String
+  accessToken     String?
+  refreshToken    String?
+  createdClasses  Classes[]    @relation("TeacherClasses")
+  enrolledClasses Enrollment[]
+  quizzes         Quiz[]       @relation("UserQuizzes")
+  responses       Response[]
+   
+}
+
+model Verification {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  code      String
+  expiresAt DateTime
+}
+
+model Classes {
+  id        String       @id @default(uuid())
+  name      String
+  classCode String       @unique
+  teacherId String
+  teacher   User         @relation("TeacherClasses", fields: [teacherId], references: [id])
+  students  Enrollment[]
+  quizzes   Quiz[]
+}
+
+model Enrollment {
+  id              String  @id @default(uuid())
+  studentId       String
+  classId         String
+  individualClass Classes @relation(fields: [classId], references: [id])
+  student         User    @relation(fields: [studentId], references: [id])
+
+  @@unique([studentId, classId])
+}
+
+model Quiz {
+  id              String        @id @default(uuid())
+  title           String
+  classId         String
+  createdBy       String
+  formUrl         String
+  formId          String       
+  individualClass Classes       @relation(fields: [classId], references: [id])
+  teacher         User          @relation("UserQuizzes", fields: [createdBy], references: [id])
+  responses       Response[]
+  questions       Question[]   @relation("QuizQuestions")
+}
+
+model Question {
+  id            String   @id @default(uuid())
+  question      String
+  options       String[] // Stores as text[] in PostgreSQL
+  correctAnswer String
+  quizId        String
+  quiz          Quiz     @relation("QuizQuestions", fields: [quizId], references: [id])
+}
+
+model Response {
+  id            String @id @default(uuid())
+  quizId        String
+  studentId     String
+  score         Int
+  feedback      String
+  studyResources String
+  answers        Json 
+  quiz          Quiz   @relation(fields: [quizId], references: [id])
+  student       User   @relation(fields: [studentId], references: [id])
+   @@unique([quizId, studentId], name: "quizId_studentId")
+}
+
+
+
+
