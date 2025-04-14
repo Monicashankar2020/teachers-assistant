@@ -6,7 +6,7 @@ This online application is created with the needs of teachers in mind, and to **
 
 ### Implemented Features
 
-1. AI powered Quiz generation using Google Forms API
+1. AI powered Quiz generation 
 2. Automated Quiz Evaluation
 3. User Authentication
 4. Automated Feedback for students
